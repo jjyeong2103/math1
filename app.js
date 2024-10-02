@@ -9,10 +9,19 @@ fileInput.addEventListener('change', function(event) {
     const file = event.target.files[0];
     if (file) {
         Papa.parse(file, {
+            header: false,
             complete: function(results) {
                 csvData = results.data;
-                renderTable(csvData);
-                renderGraph(csvData);
+                if (csvData.length > 1) {
+                    renderTable(csvData);
+                    renderGraph(csvData);
+                } else {
+                    alert('CSV 파일에 데이터가 없습니다.');
+                }
+            },
+            error: function(err) {
+                console.error('파일 파싱 오류:', err);
+                alert('CSV 파일을 읽는 데 오류가 발생했습니다.');
             }
         });
     }
@@ -21,14 +30,10 @@ fileInput.addEventListener('change', function(event) {
 function renderTable(data) {
     table.innerHTML = '';
     const headerRow = document.createElement('tr');
-    data[0].forEach(header => {
-        const th = document.createElement('th');
-        th.textContent = header;
-        headerRow.appendChild(th);
-    });
+    headerRow.innerHTML = `<th>X</th><th>Y</th>`;
     table.appendChild(headerRow);
 
-    for (let i = 1; i < data.length; i++) {
+    for (let i = 0; i < data.length; i++) {
         const row = document.createElement('tr');
         data[i].forEach(cell => {
             const td = document.createElement('td');
@@ -40,12 +45,12 @@ function renderTable(data) {
 }
 
 function renderGraph(data) {
-    const labels = data.slice(1).map(row => row[0]);
-    const values = data.slice(1).map(row => row[1]);
-
     const datasets = [{
         label: '데이터',
-        data: data.slice(1).map(row => ({ x: parseFloat(row[0]), y: parseFloat(row[1]) })),
+        data: data.slice(1).map(row => ({
+            x: parseFloat(row[0]),
+            y: parseFloat(row[1])
+        })),
         backgroundColor: 'blue',
         borderColor: 'blue',
         pointRadius: 5,
@@ -57,7 +62,6 @@ function renderGraph(data) {
     chart = new Chart(ctx, {
         type: 'scatter',
         data: {
-            labels: labels,
             datasets: datasets
         },
         options: {
@@ -67,14 +71,14 @@ function renderGraph(data) {
                     position: 'bottom',
                     title: {
                         display: true,
-                        text: data[0][0],
+                        text: 'X축',
                         color: 'black'
                     }
                 },
                 y: {
                     title: {
                         display: true,
-                        text: data[0][1],
+                        text: 'Y축',
                         color: 'black'
                     }
                 }
@@ -84,19 +88,30 @@ function renderGraph(data) {
 }
 
 trendlineButton.addEventListener('click', function() {
-    const points = csvData.slice(1).map(row => ({ x: parseFloat(row[0]), y: parseFloat(row[1]) }));
-    const trendline = calculateTrendline(points);
-    
-    chart.data.datasets.push({
-        label: '추세선',
-        data: trendline,
-        borderColor: 'red',
-        borderWidth: 2,
-        fill: false,
-        type: 'line',
-        pointRadius: 0
-    });
-    chart.update();
+    const points = csvData.slice(1).map(row => ({
+        x: parseFloat(row[0]),
+        y: parseFloat(row[1])
+    })).filter(point => !isNaN(point.x) && !isNaN(point.y)); // 유효한 포인트만 필터링
+
+    console.log('추세선 계산을 위한 포인트:', points);
+
+    if (points.length > 0) {
+        const trendline = calculateTrendline(points);
+        console.log('추세선 데이터:', trendline);
+
+        chart.data.datasets.push({
+            label: '추세선',
+            data: trendline,
+            borderColor: 'red',
+            borderWidth: 2,
+            fill: false,
+            type: 'line',
+            pointRadius: 0
+        });
+        chart.update();
+    } else {
+        alert('추세선을 그릴 데이터 포인트가 없습니다.');
+    }
 });
 
 function calculateTrendline(points) {

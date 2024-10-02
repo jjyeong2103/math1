@@ -35,8 +35,11 @@
             height: 500px;
         }
         #trendline-button {
-            margin-top: 10px;
-            display: block;
+            margin-left: 10px; /* 버튼과 텍스트 간격 조정 */
+        }
+        #graph-header {
+            display: flex;
+            align-items: center;
         }
     </style>
 </head>
@@ -45,15 +48,18 @@
         <h2>CSV 파일 업로드</h2>
         <input type="file" id="file-input" accept=".csv">
         <table id="data-table"></table>
-        <button id="trendline-button">추세선 그리기</button>
+      
     </div>
     <div id="graph-section">
-        <h2>그래프 그리기</h2>
+        <div id="graph-header">
+            <h2>그래프 그리기</h2>
+            <button id="trendline-button">추세선 그리기</button>
+        </div>
         <canvas id="chart"></canvas>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/papaparse/5.3.0/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
