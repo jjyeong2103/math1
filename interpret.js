@@ -16,6 +16,25 @@ window.onload = function() {
     }
 };
 
+
+// 차트 데이터 저장
+localStorage.setItem('chartData', JSON.stringify(chartData));
+localStorage.setItem('chartOptions', JSON.stringify(chartOptions));
+
+// 차트 불러오기
+const savedData = JSON.parse(localStorage.getItem('chartData'));
+const savedOptions = JSON.parse(localStorage.getItem('chartOptions'));
+
+const ctx = document.getElementById('chart').getContext('2d');
+const chart = new Chart(ctx, {
+    type: 'line',
+    data: savedData,
+    options: savedOptions
+});
+
+
+
+
 // PDF 다운로드 기능
 document.getElementById('download-pdf-button').addEventListener('click', async function() {
     const { jsPDF } = window.jspdf;

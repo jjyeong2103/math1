@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', function() {
     let chart;
     let csvData = [];
 
+
+
+
     // 해석하기 버튼 클릭 이벤트 추가
     // Add this code to the event listener for the 'interpretChartButton'
     interpretChartButton.addEventListener('click', function() {
