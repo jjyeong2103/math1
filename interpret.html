@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>그래프 해석하기</title>
+    <link rel="stylesheet" href="styles.css"> <!-- CSS 파일 링크 -->
+    <style>
+        /* 스타일 추가 */
+        #main-content {
+            display: flex;
+            flex-direction: column; /* 세로 방향으로 정렬 */
+            align-items: center; /* 중앙 정렬 */
+            padding: 20px;
+        }
+
+        #title-section, #interpretation-section, #graph-section {
+            margin-bottom: 20px; /* 각 섹션 사이 여백 */
+            width: 50%; /* 섹션 너비 */
+            max-width: 600px; /* 최대 너비 설정 */
+        }
+
+        #download-buttons {
+            display: flex; /* 버튼을 가로로 정렬 */
+            gap: 10px; /* 버튼 간 간격 */
+        }
+
+        #chart {
+            display: block; /* 차트가 블록 요소로 보이도록 */
+            margin-bottom: 10px; /* 차트와 해석 입력 공간 간의 여백 */
+            width: 600px; /* 원하는 너비로 조정 */
+            height: 300px; /* 원하는 높이로 조정 */
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script> <!-- jsPDF 라이브러리 추가 -->
+</head>
+<body>
+    <div id="header">
+        <h1>그래프 해석하기</h1>
+    </div>
+
+    <div id="main-content">
+        <div id="title-section">
+            <!-- <h2>제목 입력</h2> -->
+            <input type="text" id="graph-title" placeholder="그래프 제목을 입력하세요" style="width: 100%; font-size: 25px;">
+        </div>
+
+        <div id="graph-section">
+            <canvas id="chart" width="600" height="300"></canvas> <!-- 크기 조정 -->
+        </div>
+
+        <div id="interpretation-section">
+            <textarea id="graph-interpretation" rows="5" placeholder="그래프 해석을 입력하세요" style="width: 100%; font-size: 15px;"></textarea>
+        </div>
+
+        <div id="download-buttons">
+            <!-- <button id="download-image-button">이미지 다운로드</button> -->
+            <button id="download-pdf-button">PDF 다운로드</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>made by jiyeong (yangdong middle school) 수학은 재밌지영</p>
+    </footer>
+
+    <script type="module" src="./interpret.js"></script>
+
+</body>
+</html>
+
+    

@@ -4,9 +4,27 @@ document.addEventListener('DOMContentLoaded', function() {
     const lineChartButton = document.getElementById('line-chart-button');
     const clearLineChartButton = document.getElementById('clear-line-chart-button');
     const downloadChartButton = document.getElementById('download-chart-button');
+    const interpretChartButton = document.getElementById('interpret-chart-button'); // 해석하기 버튼
     const ctx = document.getElementById('chart').getContext('2d');
     let chart;
     let csvData = [];
+
+    // 해석하기 버튼 클릭 이벤트 추가
+    // Add this code to the event listener for the 'interpretChartButton'
+    interpretChartButton.addEventListener('click', function() {
+        if (chart) {
+            // Convert the chart to a Base64 image
+            const graphImage = chart.toBase64Image();
+            
+            // Save the image to localStorage
+            localStorage.setItem('graphImage', graphImage);
+            
+            // Redirect to interpret.html
+            window.location.href = 'interpret.html';
+        } else {
+            alert('그래프가 그려져 있지 않습니다.');
+        }
+    });
 
     // CSV 파일 업로드
     fileInput.addEventListener('change', function(event) {
@@ -170,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // 꺾은선 그래프 그리기
+        // 꺾은선 그래프 그리기
     lineChartButton.addEventListener('click', function() {
         const points = csvData.slice(1).map(row => ({
             x: parseFloat(row[0]),
@@ -200,29 +218,39 @@ document.addEventListener('DOMContentLoaded', function() {
     // 그래프 다운로드 버튼 이벤트 리스너 추가
     downloadChartButton.addEventListener('click', function() {
         if (chart) {
-            // 새로운 캔버스를 생성
             const downloadCanvas = document.createElement('canvas');
             const downloadCtx = downloadCanvas.getContext('2d');
-            downloadCanvas.width = ctx.canvas.width; // 기존 캔버스와 같은 크기로 설정
+            downloadCanvas.width = ctx.canvas.width; 
             downloadCanvas.height = ctx.canvas.height;
 
-            // 흰색 배경으로 채우기
             downloadCtx.fillStyle = 'white';
             downloadCtx.fillRect(0, 0, downloadCanvas.width, downloadCanvas.height);
 
-            // 현재 차트를 그린 후 다운로드
             const image = chart.toBase64Image();
             const img = new Image();
             img.src = image;
             img.onload = function() {
-                downloadCtx.drawImage(img, 0, 0); // 그래프를 새 캔버스에 그리기
+                downloadCtx.drawImage(img, 0, 0); 
                 const link = document.createElement('a');
-                link.href = downloadCanvas.toDataURL('image/png'); // PNG 형식으로 변환
-                link.download = '그래프.png'; // 다운로드할 파일 이름
-                link.click(); // 링크 클릭
+                link.href = downloadCanvas.toDataURL('image/png');
+                link.download = '그래프.png'; 
+                link.click();
             };
         } else {
             alert('그래프가 그려져 있지 않습니다.');
         }
     });
+
+    // PDF 다운로드 기능
+    document.getElementById('download-pdf-button').addEventListener('click', async function() {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF();
+
+    // 한글 폰트 추가
+    pdf.addFileToVFS("NanumGothic.ttf", "AAEAAwANAEAAIAAAABAAEAAEAAAABQAAQAAAAEAAIAAAABAAAAFAAAAAEAAAAIABAAAAEAAAABAAAABAAABAAAABQAAEAAEAAEAAEAA...");
+
 });
+
+
+});
+
