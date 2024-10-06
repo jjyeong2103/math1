@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const table = document.getElementById('data-table');
     const lineChartButton = document.getElementById('line-chart-button');
     const clearLineChartButton = document.getElementById('clear-line-chart-button');
+    const downloadChartButton = document.getElementById('download-chart-button');
     const ctx = document.getElementById('chart').getContext('2d');
     let chart;
     let csvData = [];
@@ -52,75 +53,59 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-   // 점 그래프 그리기
-function renderScatterChart(data) {
-    const datasets = [{
-        label: '데이터',
-        data: data.slice(1).map(row => ({
-            x: parseFloat(row[0]),
-            y: parseFloat(row[1])
-        })).filter(point => !isNaN(point.x) && !isNaN(point.y)),
-        backgroundColor: 'blue', // 점 색깔을 파란색으로 고정
-        borderColor: 'blue', // 점 경계 색깔도 파란색으로 고정
-        pointRadius: 5,
-        showLine: false
-    }];
+    // 점 그래프 그리기
+    function renderScatterChart(data) {
+        const datasets = [{
+            label: '데이터',
+            data: data.slice(1).map(row => ({
+                x: parseFloat(row[0]),
+                y: parseFloat(row[1])
+            })).filter(point => !isNaN(point.x) && !isNaN(point.y)),
+            backgroundColor: 'blue',
+            borderColor: 'blue',
+            pointRadius: 5,
+            showLine: false
+        }];
 
-    if (chart) chart.destroy();
-    chart = new Chart(ctx, {
-        type: 'scatter',
-        data: {
-            datasets: datasets
-        },
-        options: {
-            responsive: true,
-            scales: {
-                x: {
-                    type: 'linear',
-                    position: 'bottom',
-                    title: {
-                        display: true,
-                        text: data[0][0],
-                        color: 'black'
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: data[0][1],
-                        color: 'black'
+        if (chart) chart.destroy();
+        chart = new Chart(ctx, {
+            type: 'scatter',
+            data: {
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        type: 'linear',
+                        position: 'bottom',
+                        title: {
+                            display: true,
+                            text: data[0][0],
+                            color: 'black'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value; // 쉼표 없이 숫자 표시
+                            }
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: data[0][1],
+                            color: 'black'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value; // 쉼표 없이 숫자 표시
+                            }
+                        }
                     }
                 }
             }
-        }
-    });
-}
-
-    // 버튼 활성화/비활성화 및 표시/숨기기 함수
-    function toggleLineChartButtons(isLineChartVisible) {
-        if (isLineChartVisible) {
-            lineChartButton.style.display = 'none'; // 꺾은선 그래프 그리기 버튼 숨기기
-            clearLineChartButton.style.display = 'inline-block'; // 꺾은선 그래프 지우기 버튼 보이기
-        } else {
-            lineChartButton.style.display = 'inline-block'; // 꺾은선 그래프 그리기 버튼 보이기
-            clearLineChartButton.style.display = 'none'; // 꺾은선 그래프 지우기 버튼 숨기기
-        }
+        });
     }
-
-    // 꺾은선 그래프 그리기
-    lineChartButton.addEventListener('click', function() {
-        const points = csvData.slice(1).map(row => ({
-            x: parseFloat(row[0]),
-            y: parseFloat(row[1])
-        })).filter(point => !isNaN(point.x) && !isNaN(point.y));
-
-        if (points.length > 0) {
-            renderLineChart(points);
-            toggleLineChartButtons(true); // 꺾은선 그래프가 보이므로 버튼 상태 변경
-        } else {
-            alert('꺾은선 그래프를 그릴 데이터 포인트가 없습니다.');
-        }
-    });
 
     // 꺾은선 그래프 렌더링
     function renderLineChart(points) {
@@ -150,6 +135,11 @@ function renderScatterChart(data) {
                             display: true,
                             text: csvData[0][0],
                             color: 'black'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value; // 쉼표 없이 숫자 표시
+                            }
                         }
                     },
                     y: {
@@ -157,6 +147,11 @@ function renderScatterChart(data) {
                             display: true,
                             text: csvData[0][1],
                             color: 'black'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value; // 쉼표 없이 숫자 표시
+                            }
                         }
                     }
                 }
@@ -164,24 +159,70 @@ function renderScatterChart(data) {
         });
     }
 
+    // 버튼 활성화/비활성화 및 표시/숨기기 함수
+    function toggleLineChartButtons(isLineChartVisible) {
+        if (isLineChartVisible) {
+            lineChartButton.style.display = 'none';
+            clearLineChartButton.style.display = 'inline-block';
+        } else {
+            lineChartButton.style.display = 'inline-block';
+            clearLineChartButton.style.display = 'none';
+        }
+    }
+
+    // 꺾은선 그래프 그리기
+    lineChartButton.addEventListener('click', function() {
+        const points = csvData.slice(1).map(row => ({
+            x: parseFloat(row[0]),
+            y: parseFloat(row[1])
+        })).filter(point => !isNaN(point.x) && !isNaN(point.y));
+
+        if (points.length > 0) {
+            renderLineChart(points);
+            toggleLineChartButtons(true);
+        } else {
+            alert('꺾은선 그래프를 그릴 데이터 포인트가 없습니다.');
+        }
+    });
+
     // 꺾은선 그래프 지우기
     clearLineChartButton.addEventListener('click', function() {
         if (chart) {
             chart.destroy();
         }
-        renderScatterChart(csvData); // 점 그래프만 다시 그리기
-        toggleLineChartButtons(false); // 꺾은선 그래프가 사라졌으므로 버튼 상태 변경
+        renderScatterChart(csvData);
+        toggleLineChartButtons(false);
     });
 
     // 초기 상태에서 꺾은선 그래프 관련 버튼 비활성화
     toggleLineChartButtons(false);
-});
 
+    // 그래프 다운로드 버튼 이벤트 리스너 추가
+    downloadChartButton.addEventListener('click', function() {
+        if (chart) {
+            // 새로운 캔버스를 생성
+            const downloadCanvas = document.createElement('canvas');
+            const downloadCtx = downloadCanvas.getContext('2d');
+            downloadCanvas.width = ctx.canvas.width; // 기존 캔버스와 같은 크기로 설정
+            downloadCanvas.height = ctx.canvas.height;
 
-// 그래프 다운로드 버튼 이벤트 리스너 추가
-document.getElementById('download-chart-button').addEventListener('click', function() {
-    const link = document.createElement('a');
-    link.href = chart.toBase64Image(); // 차트를 이미지로 변환
-    link.download = 'chart.png'; // 다운로드할 파일 이름 설정
-    link.click(); // 링크 클릭
+            // 흰색 배경으로 채우기
+            downloadCtx.fillStyle = 'white';
+            downloadCtx.fillRect(0, 0, downloadCanvas.width, downloadCanvas.height);
+
+            // 현재 차트를 그린 후 다운로드
+            const image = chart.toBase64Image();
+            const img = new Image();
+            img.src = image;
+            img.onload = function() {
+                downloadCtx.drawImage(img, 0, 0); // 그래프를 새 캔버스에 그리기
+                const link = document.createElement('a');
+                link.href = downloadCanvas.toDataURL('image/png'); // PNG 형식으로 변환
+                link.download = '그래프.png'; // 다운로드할 파일 이름
+                link.click(); // 링크 클릭
+            };
+        } else {
+            alert('그래프가 그려져 있지 않습니다.');
+        }
+    });
 });
