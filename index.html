@@ -7,25 +7,32 @@
     <link rel="stylesheet" href="styles.css"> <!-- CSS 파일 링크 -->
 </head>
 <body>
-    <div id="upload-section">
-        <h2>CSV 파일 업로드</h2>
-        <input type="file" id="file-input" accept=".csv">
-        <div id="table-container">
-            <table id="data-table"></table>
-        </div>
+    <div id="header">
+        <h1>중1 그래프의 뜻과 표현</h1>
     </div>
-    <div id="graph-section">
-        <div id="graph-header">
-            <h2>그래프 그리기</h2>
-            <button id="line-chart-button">꺾은선 그래프 그리기</button>
-            <button id="clear-line-chart-button">꺾은선 그래프 지우기</button>
-            <button id="download-chart-button">그래프 다운로드</button>
+
+    <div id="main-content">
+        <div id="upload-section">
+            <h2>CSV 파일 업로드</h2>
+            <input type="file" id="file-input" accept=".csv">
+            <div id="table-container">
+                <table id="data-table"></table>
+            </div>
         </div>
-        <canvas id="chart"></canvas>
+        
+        <div id="graph-section">
+            <div id="graph-header">
+                <h2>그래프 그리기</h2>
+                <button id="line-chart-button">꺾은선 그래프 그리기</button>
+                <button id="clear-line-chart-button">꺾은선 그래프 지우기</button>
+                <button id="download-chart-button">그래프 다운로드</button>
+            </div>
+            <canvas id="chart"></canvas>
+        </div>
     </div>
     
     <footer>
-        <p>made by jiyeong_yangdong middle school</p>
+        <p>made by jiyeong (yangdong middle school) 수학은 재밌지영</p>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -33,4 +40,3 @@
     <script type="module" src="./app.js"></script>
 </body>
 </html>
-
