@@ -176,3 +176,12 @@ function renderScatterChart(data) {
     // 초기 상태에서 꺾은선 그래프 관련 버튼 비활성화
     toggleLineChartButtons(false);
 });
+
+
+// 그래프 다운로드 버튼 이벤트 리스너 추가
+document.getElementById('download-chart-button').addEventListener('click', function() {
+    const link = document.createElement('a');
+    link.href = chart.toBase64Image(); // 차트를 이미지로 변환
+    link.download = 'chart.png'; // 다운로드할 파일 이름 설정
+    link.click(); // 링크 클릭
+});
