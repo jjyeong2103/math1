@@ -37,22 +37,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('CSV 파일만 업로드할 수 있습니다.');
                 return;
             }
-            Papa.parse(file, {
-                header: false,
-                complete: function(results) {
-                    csvData = results.data;
-                    if (csvData.length > 1 && csvData[0].length >= 2) {
-                        renderTable(csvData);
-                        renderScatterChart(csvData);
-                    } else {
-                        alert('CSV 파일에 유효한 데이터가 없습니다.');
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result; // UTF-8로 디코딩된 텍스트
+                Papa.parse(text, {
+                    header: false,
+                    complete: function(results) {
+                        csvData = results.data;
+                        if (csvData.length > 1 && csvData[0].length >= 2) {
+                            renderTable(csvData);
+                            renderScatterChart(csvData);
+                        } else {
+                            alert('CSV 파일에 유효한 데이터가 없습니다.');
+                        }
+                    },
+                    error: function(err) {
+                        console.error('파일 파싱 오류:', err);
+                        alert('CSV 파일을 읽는 데 오류가 발생했습니다: ' + err.message);
                     }
-                },
-                error: function(err) {
-                    console.error('파일 파싱 오류:', err);
-                    alert('CSV 파일을 읽는 데 오류가 발생했습니다: ' + err.message);
-                }
-            });
+                });
+            };
+            reader.readAsText(file, 'euc-kr'); // UTF-8로 읽기
         }
     });
 
